@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block Level Authority Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter', sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#ff9933,#ffffff,#138808,#4da6ff);
+    background-size:400% 400%;
+    animation:gradientBG 12s ease infinite;
+}
+
+@keyframes gradientBG{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.login-card{
+    width:400px;
+    padding:40px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.25);
+    backdrop-filter:blur(15px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.login-card h2{
+    text-align:center;
+    color:#0d6efd;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.login-card p{
+    text-align:center;
+    font-size:14px;
+    margin-bottom:25px;
+    color:#333;
+}
+
+.input-group{
+    margin-bottom:20px;
+}
+
+.input-group label{
+    font-size:14px;
+    font-weight:500;
+}
+
+.input-group input{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    outline:none;
+    transition:0.3s;
+}
+
+.input-group input:focus{
+    border-color:#0d6efd;
+    box-shadow:0 0 8px rgba(13,110,253,0.3);
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(90deg,#ff9933,#138808);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+.register-link{
+    text-align:center;
+    margin-top:15px;
+    font-size:13px;
+}
+
+.register-link a{
+    color:#0d6efd;
+    text-decoration:none;
+    font-weight:500;
+}
+
+.register-link a:hover{
+    text-decoration:underline;
+}
+
+.error-message{
+    color:red;
+    font-size:13px;
+    margin-top:10px;
+    text-align:center;
+}
+
+@media(max-width:450px){
+    .login-card{
+        width:90%;
+        padding:25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+    <h2>Block Level Authority</h2>
+    <p>Secure Monitoring Login</p>
+
+    <form id="loginForm">
+
+        <div class="input-group">
+            <label>Authority ID</label>
+            <input type="text" id="loginAuthorityId" placeholder="Enter Authority ID" required>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter Password" required>
+        </div>
+
+        <button type="submit">Login</button>
+
+        <div class="error-message" id="errorMsg"></div>
+
+    </form>
+
+    <div class="register-link">
+        New Authority? <a href="Block_Level_Authority_Registration.html">Register Here</a>
+    </div>
+
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const enteredId = document.getElementById("loginAuthorityId").value;
+    const enteredPassword = document.getElementById("loginPassword").value;
+
+    const storedData = JSON.parse(localStorage.getItem("blockAuthority"));
+
+    if(storedData && 
+       enteredId === storedData.authorityId && 
+       enteredPassword === storedData.password){
+
+        alert("Login Successful!");
+        window.location.href = "Block_Authority_Dashboard.html";
+
+    } else {
+        document.getElementById("errorMsg").innerText = 
+        "Invalid Authority ID or Password!";
+    }
+});
+</script>
+
+</body>
+</html>

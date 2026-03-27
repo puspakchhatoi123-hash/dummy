@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Citizen Login | District Development Portal</title>
+
+<style>
+/* Modern, clean typography */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --accent: #f59e0b;
+    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+}
+
+body {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--text-main);
+}
+
+/* Elegant Header with Backdrop Blur */
+.header {
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.5px;
+    border-bottom: 3px solid var(--accent);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Main Content Area */
+.container {
+    width: 100%;
+    max-width: 440px;
+    margin: auto;
+    background: var(--card-bg);
+    padding: 50px;
+    border-radius: 28px;
+    box-shadow: 
+        0 10px 15px -3px rgba(0, 0, 0, 0.05),
+        0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Subtle background glow behind the card */
+.container::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+    z-index: -1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    text-align: center;
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -0.5px;
+}
+
+/* Subtitle under Login heading */
+h2::after {
+    content: "Secure Access to Public Services";
+    display: block;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-top: 8px;
+    letter-spacing: 0;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    margin-top: 25px;
+}
+
+input {
+    width: 100%;
+    padding: 14px 18px;
+    margin-top: 0;
+    margin-bottom: 0;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 16px;
+    font-family: inherit;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+    background: #f8fafc;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+button {
+    width: 100%;
+    padding: 16px;
+    margin-top: 35px;
+    background: var(--primary);
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px -5px rgba(37, 99, 235, 0.4);
+    filter: brightness(1.1);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.link {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 15px;
+    color: var(--text-muted);
+}
+
+.link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: color 0.2s;
+}
+
+.link a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        padding: 35px 25px;
+    }
+    
+    h2 {
+        font-size: 26px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    District Development & Public Issues Portal
+</div>
+
+<div class="container">
+    <h2>Citizen Login</h2>
+
+    <label>Aadhaar Number</label>
+    <input type="text" id="aadhaar" placeholder="Enter 12-digit Aadhaar number">
+
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter password">
+
+    <button onclick="login()">Login to Account</button>
+
+    <div class="link">
+        New user? <a href="citizen-register.html">Register here</a>
+    </div>
+</div>
+
+<script>
+function login(){
+    let aadhaar = document.getElementById("aadhaar").value.trim();
+    let password = document.getElementById("password").value;
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let user = users.find(u => u.aadhaar === aadhaar && u.password === password);
+
+    if(!user){
+        alert("Invalid Aadhaar or Password");
+        return;
+    }
+
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

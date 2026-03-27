@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>District Authority Registration</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+}
+
+.card{
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(15px);
+    padding:40px;
+    border-radius:18px;
+    width:400px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-bottom:15px;
+    border-radius:6px;
+    border:none;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#ff9933;
+    border:none;
+    border-radius:6px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#e68a00;
+}
+
+.id-box{
+    margin-top:20px;
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    color:#00ffcc;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+<h2>District Authority Registration</h2>
+
+<div id="regForm">
+<input type="text" id="name" placeholder="Full Name">
+<input type="text" id="districtName" placeholder="District Name">
+<input type="password" id="password" placeholder="Create Password">
+
+<button onclick="register()">Generate District ID</button>
+</div>
+
+<div class="id-box" id="idBox" style="display:none;"></div>
+
+</div>
+
+<script>
+function register(){
+
+    let name=document.getElementById("name").value.trim();
+    let district=document.getElementById("districtName").value.trim();
+    let password=document.getElementById("password").value.trim();
+
+    if(!name || !district || !password){
+        alert("All fields required");
+        return;
+    }
+
+    let id="DIST-"+Math.floor(1000+Math.random()*9000);
+
+    let user={
+        name:name,
+        district:district,
+        password:password,
+        districtId:id
+    };
+
+    localStorage.setItem("districtUser_"+id,JSON.stringify(user));
+
+    document.getElementById("regForm").style.display="none";
+    document.getElementById("idBox").style.display="block";
+    document.getElementById("idBox").innerText="Your District ID: "+id;
+}
+</script>
+
+</body>
+</html>

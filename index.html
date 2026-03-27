@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GovtConnect - Modern Digital Governance</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #0047AB;
+            --primary-dark: #002D62;
+            --accent: #FFD700;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .glass-nav {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(rgba(0, 45, 98, 0.7), rgba(0, 0, 0, 0.6)), 
+                        url('https://images.unsplash.com/photo-1595658658481-d53d3f999875?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .service-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        /* Modal Animation */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+        }
+
+        .active-modal { display: flex; }
+
+        /* Page Transitions */
+        .page-view {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .active-view { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Chatbot UI */
+        #chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chat-window {
+            width: 350px;
+            height: 450px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Login List Styling */
+        .login-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .login-item:hover {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- Navbar -->
+    <header class="glass-nav fixed top-0 w-full z-50 py-4 px-6 md:px-12 flex justify-between items-center">
+        <a href="javascript:void(0)" onclick="showView('home')" class="flex items-center gap-3">
+            <div class="bg-blue-700 text-white p-2 rounded-lg text-2xl">🏛</div>
+            <h1 class="text-2xl font-extrabold tracking-tight text-blue-900">Govt<span class="text-blue-600">Connect</span></h1>
+        </a>
+
+         <nav class="hidden lg:flex items-center gap-8">
+            <a href="javascript:void(0)" onclick="showView('home')" class="nav-link font-semibold hover:text-blue-700 transition-colors" data-key="home">Home</a>
+            <a href="javascript:void(0)" onclick="showView('govt')" class="nav-link font-semibold hover:text-blue-700 transition-colors" data-key="dept">Government</a>
+            <a href="javascript:void(0)" onclick="showView('jobs')" class="nav-link font-semibold hover:text-blue-700 transition-colors" data-key="services">Jobs</a>
+            <a href="javascript:void(0)" onclick="showView('transport')" class="nav-link font-semibold hover:text-blue-700 transition-colors" data-key="contact">Transport</a>
+            <!-- <a href="javascript:void(0)" onclick="toggleModal('loginModal')" class="font-bold text-blue-700 hover:text-blue-900">Login</a> -->
+        </nav> 
+
+        <div class="flex items-center gap-4">
+            <select id="languageSelect" class="bg-white border border-slate-200 rounded-full px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="or">ଓଡ଼ିଆ</option>
+            </select>
+            <!-- <button onclick="toggleModal('issueModal')" class="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2.5 rounded-full font-bold text-sm transition-all shadow-lg hover:shadow-blue-200" data-key="reportBtn">
+                Report Issue
+            </button> -->
+        </div>
+    </header>
+
+    <!-- VIEW: HOME -->
+    <div id="view-home" class="page-view active-view">
+        <!-- Hero Section -->
+        <section class="hero-gradient min-h-screen flex items-center px-6 md:px-12 pt-20">
+            <div class="max-w-4xl">
+                <h1 id="heroTitle" class="text-5xl md:text-7xl font-black text-white leading-tight mb-6">
+                    Fastest Growing City <br> In The India
+                </h1>
+                <p id="heroDesc" class="text-lg md:text-xl text-slate-100 mb-10 max-w-2xl leading-relaxed opacity-90">
+                    Driving innovation and transparency in governance. Access citizen services, track applications, and stay informed with a single digital window.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="showView('govt')" class="bg-yellow-400 hover:bg-yellow-500 text-blue-900 px-8 py-4 rounded-full font-extrabold text-lg transition-transform hover:scale-105 shadow-xl">
+                        Get Started
+                    </button>
+                    <button onclick="toggleModal('loginModal')" class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 px-8 py-4 rounded-full font-bold text-lg transition-all">
+                        Member Login
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Grid -->
+        <section class="px-6 md:px-12 py-24 -mt-24 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div onclick="showView('govt')" class="service-card bg-white p-8 rounded-3xl border border-slate-100 flex flex-col gap-4">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner">🏛</div>
+                    <h3 class="text-xl font-bold text-slate-800" data-key="s1">Your Government</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Access legislative documents, council minutes, and transparency reports.</p>
+                    <span class="mt-4 text-blue-600 font-bold text-sm flex items-center gap-2">Learn More ➔</span>
+                </div>
+                <!-- Card 2 -->
+                <div onclick="showView('jobs')" class="service-card bg-white p-8 rounded-3xl border border-slate-100 flex flex-col gap-4">
+                    <div class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner">💼</div>
+                    <h3 class="text-xl font-bold text-slate-800" data-key="s2">Jobs & Employment</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Find latest government job openings and unemployment benefits information.</p>
+                    <span class="mt-4 text-blue-600 font-bold text-sm flex items-center gap-2">Search Jobs ➔</span>
+                </div>
+                <!-- Card 3 -->
+                <div onclick="showView('transport')" class="service-card bg-white p-8 rounded-3xl border border-slate-100 flex flex-col gap-4">
+                    <div class="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-3xl shadow-inner">🛣</div>
+                    <h3 class="text-xl font-bold text-slate-800" data-key="s4">Roads & Transport</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">Apply for driving licenses, track public transport, and pay traffic fines.</p>
+                    <span class="mt-4 text-blue-600 font-bold text-sm flex items-center gap-2">Services ➔</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- VIEW: GOVERNMENT DETAILS -->
+    <div id="view-govt" class="page-view py-32 px-6 md:px-12 bg-white min-h-screen">
+        <div class="max-w-6xl mx-auto">
+            <button onclick="showView('home')" class="mb-8 text-blue-600 font-bold flex items-center gap-2">← Back to Home</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-black text-blue-900 mb-6">Your Government Portal</h2>
+                    <p class="text-slate-600 mb-8 leading-relaxed">Our administration is committed to radical transparency and digital-first service delivery. Use this portal to track the city budget, read about upcoming legislation, and connect with your local representatives.</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="text-2xl">📋</span>
+                            <div>
+                                <h4 class="font-bold">Budget 2024-25</h4>
+                                <p class="text-xs text-slate-500">View detailed financial allocation for city projects.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="text-2xl">🏛</span>
+                            <div>
+                                <h4 class="font-bold">City Council Minutes</h4>
+                                <p class="text-xs text-slate-500">Read transcripts of all official meetings.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-700 rounded-3xl p-8 text-white">
+                    <h3 class="text-2xl font-bold mb-4">Meet Your Mayor</h3>
+                    <div class="w-full h-48 bg-blue-600 rounded-2xl mb-4 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80" alt="Mayor" class="w-full h-full object-cover grayscale brightness-110">
+                    </div>
+                    <p class="text-blue-100 italic mb-4">"Building a smarter city starts with listening to every citizen. Join our town hall this Friday."</p>
+                    <button class="w-full bg-white text-blue-700 font-bold py-3 rounded-xl">Register for Town Hall</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW: JOBS DETAILS -->
+    <div id="view-jobs" class="page-view py-32 px-6 md:px-12 bg-slate-50 min-h-screen">
+        <div class="max-w-6xl mx-auto">
+            <button onclick="showView('home')" class="mb-8 text-blue-600 font-bold flex items-center gap-2">← Back to Home</button>
+            <h2 class="text-4xl font-black text-slate-900 mb-2">Employment Exchange</h2>
+            <p class="text-slate-500 mb-12 italic">Connecting citizens with local government and industrial opportunities.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center">
+                        <div>
+                            <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded mb-2 inline-block uppercase tracking-wider">Public Sector</span>
+                            <h4 class="text-xl font-bold">Data Analyst - Municipal Office</h4>
+                            <p class="text-slate-500 text-sm">Location: City Center • Salary: ₹45,000 - ₹55,000</p>
+                        </div>
+                        <button class="bg-blue-700 text-white px-6 py-2 rounded-lg font-bold">Apply</button>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center">
+                        <div>
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded mb-2 inline-block uppercase tracking-wider">Civil Engineering</span>
+                            <h4 class="text-xl font-bold">Junior Supervisor - Road Works</h4>
+                            <p class="text-slate-500 text-sm">Location: North Zone • Salary: ₹35,000 - ₹42,000</p>
+                        </div>
+                        <button class="bg-blue-700 text-white px-6 py-2 rounded-lg font-bold">Apply</button>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-slate-100">
+                    <h4 class="text-xl font-bold mb-6">Skill Development</h4>
+                    <p class="text-slate-500 text-sm mb-6">Register for free government-sponsored vocational training programs.</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700">
+                            <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700">✓</span> Digital Literacy
+                        </li>
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700">
+                            <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700">✓</span> Solar Panel Maintenance
+                        </li>
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700">
+                            <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-700">✓</span> Advanced Hospitality
+                        </li>
+                    </ul>
+                    <button class="w-full mt-8 border-2 border-blue-700 text-blue-700 py-3 rounded-xl font-bold hover:bg-blue-50 transition-colors">Register Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW: TRANSPORT DETAILS -->
+    <div id="view-transport" class="page-view py-32 px-6 md:px-12 bg-white min-h-screen">
+        <div class="max-w-6xl mx-auto">
+            <button onclick="showView('home')" class="mb-8 text-blue-600 font-bold flex items-center gap-2">← Back to Home</button>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-4xl font-black text-blue-900 mb-2">Transport & Infrastructure</h2>
+                    <p class="text-slate-600">Smart mobility for a faster, greener city transit network.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="bg-blue-700 text-white px-6 py-3 rounded-xl font-bold">Renew DL</button>
+                    <button class="bg-slate-100 text-slate-700 px-6 py-3 rounded-xl font-bold">Live Bus Track</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-blue-50 p-8 rounded-3xl border border-blue-100">
+                    <h4 class="text-xl font-bold text-blue-900 mb-4">Traffic Status</h4>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-medium">Main Square</span>
+                            <span class="text-green-600 font-bold">Clear</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-medium">Industrial Area Road</span>
+                            <span class="text-orange-600 font-bold">Congested</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-medium">Airport Express</span>
+                            <span class="text-green-600 font-bold">Clear</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-8 rounded-3xl text-white col-span-1 md:col-span-2">
+                    <h4 class="text-xl font-bold mb-4">Upcoming Metro Phase</h4>
+                    <p class="text-slate-400 mb-6 text-sm">The new Blue Line extension is 85% complete. Expected launch: September 2024.</p>
+                    <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden mb-6">
+                        <div class="bg-blue-500 h-full w-[85%]"></div>
+                    </div>
+                    <div class="flex gap-8">
+                        <div>
+                            <span class="text-xs text-slate-500 uppercase tracking-widest font-bold">Total Stations</span>
+                            <p class="text-2xl font-black">12</p>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-500 uppercase tracking-widest font-bold">Est. Daily Riders</span>
+                            <p class="text-2xl font-black">450k</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-blue-950 text-white py-16 px-6 md:px-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-white/10 pb-12 mb-8">
+            <div class="col-span-1 md:col-span-2">
+                <h2 class="text-2xl font-bold mb-4">GovtConnect</h2>
+                <p class="text-slate-400 max-w-sm mb-6">The official digital portal for citizen services, promoting transparency and technological advancement for a better India.</p>
+                <div class="flex gap-4">
+                    <span class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-blue-600 cursor-pointer transition-colors">f</span>
+                    <span class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-blue-600 cursor-pointer transition-colors">t</span>
+                    <span class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-blue-600 cursor-pointer transition-colors">i</span>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 uppercase text-sm tracking-widest text-blue-400">Important Links</h4>
+                <ul class="space-y-4 text-slate-400">
+                    <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Help Desk</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Grievance Redressal</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 uppercase text-sm tracking-widest text-blue-400">Emergency Numbers</h4>
+                <ul class="space-y-2 font-mono">
+                    <li class="text-white">Police: 100</li>
+                    <li class="text-white">Fire: 101</li>
+                    <li class="text-white">Ambulance: 102</li>
+                    <li class="text-white">Women: 1091</li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center text-slate-500 text-sm">
+            &copy; 2024 GovtConnect Digital India Initiative. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- Issue Modal -->
+    <div id="issueModal" class="modal-overlay fixed inset-0 z-[100] items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="bg-blue-700 p-6 text-white flex justify-between items-center">
+                <h3 class="text-xl font-bold">Report an Issue</h3>
+                <button onclick="toggleModal('issueModal')" class="text-2xl font-light hover:rotate-90 transition-transform">&times;</button>
+            </div>
+            <form id="issueForm" class="p-8 space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Issue Category</label>
+                    <select class="w-full border p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option>Roads & Potholes</option>
+                        <option>Electricity/Street Lights</option>
+                        <option>Waste Management</option>
+                        <option>Public Safety</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Description</label>
+                    <textarea rows="4" class="w-full border p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Explain the issue in detail..."></textarea>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-xl text-xs text-blue-700">
+                    Your location and identity will be automatically verified via Digital ID for authentic reporting.
+                </div>
+                <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-xl transition-all">Submit Complaint</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal-overlay fixed inset-0 z-[100] items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="bg-blue-900 p-6 text-white flex justify-between items-center">
+                <h3 class="text-xl font-bold">Portal Access</h3>
+                <button onclick="toggleModal('loginModal')" class="text-2xl font-light hover:rotate-90 transition-transform">&times;</button>
+            </div>
+            <div class="p-8">
+                <p class="text-slate-500 mb-6 text-sm">Please select your login category to access personalized services and administrative tools.</p>
+                <div class="space-y-3">
+                    <!-- <div class="login-item" onclick="alert('Redirecting to Citizen Login...')"> -->
+
+
+
+
+                        <div class="login-item" onclick="window.location.href='citizen-login.html'">
+                        <span class="text-2xl mr-4">👤</span>
+                        <div>
+
+
+
+                            <h4 class="font-bold text-slate-800">Citizen Login</h4>
+                            <p class="text-xs text-slate-500">Access personal services & applications</p>
+                        </div>
+                    </div>
+                    <!-- <div class="login-item" onclick="alert('Redirecting to Sarpanch Login...')"> -->
+                        <div class="login-item" onclick="window.location.href='sarpanch-login.html'">
+                        <span class="text-2xl mr-4">👨‍💼</span>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Sarpanch Login</h4>
+                            <p class="text-xs text-slate-500">Village administration and approvals</p>
+                        </div>
+                    </div>
+
+                    <!-- <div class="login-item" onclick="alert('Redirecting to Block Authority Login...')"> -->
+                         <div class="login-item" onclick="window.location.href='Block_Level_Authority_Login.html'">
+                        <span class="text-2xl mr-4">🏢</span>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Block Level Authority</h4>
+                            <p class="text-xs text-slate-500">Regional oversight and reporting</p>
+                        </div>
+                    </div>
+
+                    <!-- <div class="login-item" onclick="alert('Redirecting to District Authority Login...')"> -->
+                        <div class="login-item" onclick="window.location.href='district-login.html'">
+                        <span class="text-2xl mr-4">🏛️</span>
+                        <div>
+                            <h4 class="font-bold text-slate-800">District Level Authority</h4>
+                            <p class="text-xs text-slate-500">High-level administration & policy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div id="chat-widget">
+        <div id="chatWindow" class="chat-window bg-white rounded-2xl border border-slate-200 overflow-hidden mb-4">
+            <div class="bg-blue-700 p-4 text-white font-bold flex justify-between items-center">
+                <span>Citizen Assistant AI</span>
+                <button onclick="toggleChat()" class="opacity-70 hover:opacity-100">&times;</button>
+            </div>
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4 text-sm bg-slate-50">
+                <div class="bg-blue-100 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-blue-900">
+                    Hello! I am your GovtConnect Assistant. How can I help you today?
+                </div>
+            </div>
+            <div class="p-3 border-t flex gap-2">
+                <input id="chatInput" type="text" placeholder="Type your query..." class="flex-1 bg-slate-100 border-none rounded-full px-4 text-sm focus:ring-2 focus:ring-blue-500">
+                <button id="sendChatBtn" class="bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center">➤</button>
+            </div>
+        </div>
+        <button onclick="toggleChat()" class="bg-blue-700 w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl shadow-xl hover:scale-110 transition-transform">
+            💬
+        </button>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                home: "Home", dept: "Government", services: "Jobs", contact: "Transport", reportBtn: "Report Issue",
+                heroTitle: "Fastest Growing City <br> In The India",
+                heroDesc: "Driving innovation and transparency in governance. Access citizen services, track applications, and stay informed with a single digital window.",
+                s1: "Your Government", s2: "Jobs & Employment", s4: "Roads & Transport"
+            },
+            hi: {
+                home: "होम", dept: "सरकार", services: "नौकरियां", contact: "परिवहन", reportBtn: "समस्या दर्ज करें",
+                heroTitle: "भारत में सबसे तेजी <br> से बढ़ता शहर",
+                heroDesc: "शासन में नवाचार और पारदर्शिता को बढ़ावा देना। एक ही डिजिटल विंडो के साथ नागरिक सेवाओं तक पहुंचें, आवेदनों को ट्रैक करें और सूचित रहें।",
+                s1: "आपकी सरकार", s2: "नौकरी और रोजगार", s4: "सड़क और परिवहन"
+            },
+            or: {
+                home: "ମୁଖ୍ୟ ପୃଷ୍ଠା", dept: "ସରକାର", services: "ନିଯୁକ୍ତି", contact: "ପରିବହନ", reportBtn: "ଅଭିଯୋଗ କରନ୍ତୁ",
+                heroTitle: "ଭାରତର ଦ୍ରୁତତମ <br> ବୃଦ୍ଧିଶୀଳ ସହର",
+                heroDesc: "ଶାସନରେ ନୂତନତା ଏବଂ ସ୍ୱଚ୍ଛତା। ଗୋଟିଏ ଡିଜିଟାଲ୍ ୱିଣ୍ଡୋ ସହିତ ନାଗରିକ ସେବା ପାଆନ୍ତୁ, ଆବେଦନଗୁଡ଼ିକୁ ଟ୍ରାକ୍ କରନ୍ତୁ ଏବଂ ଅପଡେଟ୍ ରୁହନ୍ତୁ।",
+                s1: "ଆପଣଙ୍କ ସରକାର", s2: "ନିଯୁକ୍ତି ଓ ବେକାରୀ", s4: "ରାସ୍ତା ଓ ପରିବହନ"
+            }
+        };
+
+        const languageSelect = document.getElementById('languageSelect');
+        const apiKey = ""; // Environment handles this
+
+        languageSelect.addEventListener('change', (e) => {
+            const lang = e.target.value;
+            const t = translations[lang];
+
+            // Update Navbar
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const key = link.getAttribute('data-key');
+                if(t[key]) link.innerText = t[key];
+            });
+
+            // Update Hero
+            document.getElementById('heroTitle').innerHTML = t.heroTitle;
+            document.getElementById('heroDesc').innerText = t.heroDesc;
+            document.querySelector('[data-key="reportBtn"]').innerText = t.reportBtn;
+
+            // Update Services
+            [1, 2, 4].forEach(i => {
+                const el = document.querySelector(`[data-key="s${i}"]`);
+                if(el) el.innerText = t[`s${i}`];
+            });
+        });
+
+        // VIEW NAVIGATION LOGIC
+        function showView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.classList.remove('active-view');
+            });
+            // Show selected view
+            const targetView = document.getElementById(`view-${viewName}`);
+            if(targetView) {
+                targetView.classList.add('active-view');
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Modal Utility
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.toggle('active-modal');
+        }
+
+        // Chatbot Logic
+        function toggleChat() {
+            const chat = document.getElementById('chatWindow');
+            chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function callGemini(query) {
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `You are a helpful government assistant for the city. Answer queries about government services in a polite and formal manner. Query: ${query}` }] }]
+                    })
+                });
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                return "I'm having trouble connecting to my knowledge base right now. Please try again later.";
+            }
+        }
+   
+        document.getElementById('sendChatBtn').addEventListener('click', async () => {
+            const input = document.getElementById('chatInput');
+            const messages = document.getElementById('chatMessages');
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            // User Message
+            const userDiv = document.createElement('div');
+            userDiv.className = "bg-white p-3 rounded-2xl rounded-tr-none max-w-[80%] text-slate-800 ml-auto border border-slate-200 shadow-sm";
+            userDiv.innerText = userText;
+            messages.appendChild(userDiv);
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            // Typing Indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = "bg-blue-100 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-blue-900 animate-pulse";
+            typingDiv.innerText = "Processing query...";
+            messages.appendChild(typingDiv);
+
+            const aiResponse = await callGemini(userText);
+            
+            // AI Message
+            typingDiv.classList.remove('animate-pulse');
+            typingDiv.innerText = aiResponse;
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        document.getElementById('issueForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const successMsg = document.createElement('div');
+            successMsg.className = "fixed top-24 left-1/2 -translate-x-1/2 bg-green-600 text-white px-8 py-3 rounded-full shadow-2xl z-[200] animate-bounce";
+            successMsg.innerText = "Complaint Registered Successfully! Token: #" + Math.floor(Math.random() * 900000 + 100000);
+            document.body.appendChild(successMsg);
+            toggleModal('issueModal');
+            setTimeout(() => successMsg.remove(), 5000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GovtConnect - Sarpanch Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #0047AB;
+    --primary-dark: #002D62;
+    --saffron: #FF9933;
+    --green: #198754;
+    --bg-light: #f4f6f9;
+    --transition: all 0.3s ease;
+}
+
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#fdfbfb 0%,#ebedee 100%);
+    padding:20px;
+}
+
+.auth-container{
+    background:white;
+    width:100%;
+    max-width:450px;
+    padding:40px;
+    border-radius:24px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.1);
+    border-top:5px solid var(--saffron);
+    position:relative;
+}
+
+.auth-container::after{
+    content:'';
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:5px;
+    background:var(--green);
+    border-radius:0 0 24px 24px;
+}
+
+.auth-container h2{
+    text-align:center;
+    margin-bottom:10px;
+    color:var(--primary-dark);
+}
+
+.auth-container p{
+    text-align:center;
+    margin-bottom:25px;
+    color:#666;
+    font-size:0.9rem;
+}
+
+.form-group{margin-bottom:15px;}
+.form-group label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:600;
+    font-size:0.8rem;
+}
+
+.form-group input{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    outline:none;
+}
+
+.auth-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:var(--primary);
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+    transition:var(--transition);
+}
+
+.auth-btn:hover{
+    background:var(--primary-dark);
+    transform:translateY(-1px);
+}
+
+.toggle-link{
+    text-align:center;
+    margin-top:20px;
+    font-size:0.85rem;
+}
+
+.toggle-link a{
+    color:var(--primary);
+    font-weight:600;
+    text-decoration:none;
+}
+
+.emblem{
+    width:50px;
+    margin:0 auto 15px;
+    display:block;
+}
+</style>
+</head>
+<body>
+
+<div class="auth-container">
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" class="emblem">
+
+<h2>Sarpanch Login</h2>
+<p>Access District Work Portal</p>
+
+<div class="form-group">
+<label>Aadhaar Number</label>
+<input type="text" id="loginAadhaar" maxlength="12">
+</div>
+
+<div class="form-group">
+<label>Sarpanch Unique ID (SP-XXXX)</label>
+<input type="text" id="loginSPID">
+</div>
+
+<button class="auth-btn" onclick="handleLogin()">Sign In</button>
+
+<div class="toggle-link">
+New Sarpanch? <a href="sarpanch-register.html">Register Here</a>
+</div>
+
+</div>
+
+<script>
+function handleLogin(){
+    const aadhaar=document.getElementById('loginAadhaar').value.trim();
+    const spIDInput=document.getElementById('loginSPID').value.trim();
+    const storedUser=localStorage.getItem(`user_${aadhaar}`);
+
+    if(storedUser){
+        const user=JSON.parse(storedUser);
+        if(user.spID===spIDInput){
+            localStorage.setItem('currentUser',JSON.stringify(user));
+            window.location.href="sarpanch-dashboard.html";
+        }else{
+            alert("Authentication Error: Unique ID incorrect.");
+        }
+    }else{
+        alert("Aadhaar not registered.");
+    }
+}
+</script>
+
+</body>
+</html>

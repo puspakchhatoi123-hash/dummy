@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>District Development Portal - Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+:root {
+    --primary: #0d6efd;
+    --secondary: #6c757d;
+    --success: #198754;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --purple: #6f42c1;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #f0f2f5;
+    color: #444;
+}
+
+/* Header Styling */
+.header {
+    background: linear-gradient(90deg, #0d6efd 0%, #0043a8 100%);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header h2 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: 0.5px; }
+.header .user {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    width: 40px; 
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Layout */
+.main { display: flex; min-height: calc(100vh - 70px); }
+
+/* Sidebar Styling */
+.sidebar {
+    width: 260px;
+    background: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+}
+.profile-box {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(to bottom, #eef4ff, #ffffff);
+    border-bottom: 1px solid #eee;
+}
+.profile-box img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+    object-fit: cover;
+}
+.profile-box h3 { margin: 15px 0 5px; color: #333; font-size: 18px; }
+.profile-box p { margin: 0; color: #777; font-size: 14px; }
+
+.upload-wrapper { margin-top: 15px; position: relative; overflow: hidden; display: inline-block; }
+.upload-btn {
+    border: 1px solid #0d6efd; color: #0d6efd; background: white;
+    padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer;
+    transition: 0.3s;
+}
+.upload-btn:hover { background: #0d6efd; color: white; }
+.upload-wrapper input[type=file] {
+    font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer;
+}
+
+/* Menu */
+.menu { padding: 10px 0; }
+.menu a {
+    display: flex;
+    align-items: center;
+    padding: 14px 25px;
+    text-decoration: none;
+    color: #555;
+    font-size: 15px;
+    transition: 0.2s;
+    border-left: 4px solid transparent;
+}
+.menu a i { margin-right: 12px; width: 20px; text-align: center; }
+.menu a:hover { background: #f8f9fa; color: #0d6efd; }
+.menu a.active {
+    background: #eef4ff;
+    color: #0d6efd;
+    border-left: 4px solid #0d6efd;
+    font-weight: 500;
+}
+
+/* Content Area */
+.content { flex: 1; padding: 30px; overflow-y: auto; }
+
+/* Cards & Sections */
+.section-title { margin-bottom: 20px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 10px; }
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow);
+    border: 1px solid #eee;
+}
+.card h3 { margin-top: 0; color: #0d6efd; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+
+/* Form Styling */
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+.form-group input, .form-group textarea {
+    width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; box-sizing: border-box;
+}
+.submit-btn {
+    background: var(--primary); color: white; border: none; padding: 12px 20px; 
+    border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%;
+}
+
+/* Status Boxes */
+.status-boxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.status {
+    padding: 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+.status:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+.status h2 { font-size: 32px; margin: 0 0 5px; font-weight: 600; }
+.status p { margin: 0; font-size: 14px; opacity: 0.9; }
+.status i { position: absolute; right: 20px; bottom: 20px; font-size: 40px; opacity: 0.2; }
+
+.applied { background: linear-gradient(135deg, #6f42c1, #8e44ad); }
+.progress { background: linear-gradient(135deg, #ffc107, #ff9800); color: #000; }
+.approved { background: linear-gradient(135deg, #198754, #218838); }
+.rejected { background: linear-gradient(135deg, #dc3545, #c82333); }
+
+/* Table Styling */
+table { width: 100%; border-collapse: separate; border-spacing: 0; }
+th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: left; }
+th { background: #f8f9fa; color: #555; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafafa; }
+
+/* Problem List */
+.problem-item {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: var(--shadow);
+    border-left: 5px solid #ccc;
+    transition: 0.3s;
+}
+.problem-item:hover { transform: translateX(5px); }
+.prob-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.prob-title { font-size: 18px; font-weight: 600; color: #333; margin: 0; }
+.prob-id { font-size: 12px; color: #999; background: #eee; padding: 2px 8px; border-radius: 4px; }
+.prob-desc { color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 15px; }
+.prob-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 10px; font-size: 13px; color: #888; }
+.badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; color: white; }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div style="display:flex; align-items:center; gap:10px;">
+        <i class="fas fa-landmark fa-lg"></i>
+        <h2>District Development & Public Issues Portal</h2>
+    </div>
+    <div class="user" id="userIcon">U</div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <div class="profile-box">
+            <img id="profilePhoto" src="https://via.placeholder.com/150" alt="Profile">
+            <h3 id="userName">User</h3>
+            <p><i class="fas fa-check-circle" style="color:#198754; margin-right:5px;"></i>Verified Citizen</p>
+            <div class="upload-wrapper">
+                <button class="upload-btn"><i class="fas fa-camera"></i> Change Photo</button>
+                <input type="file" accept="image/*" onchange="uploadPhoto(event)">
+            </div>
+        </div>
+        <div class="menu">
+            <a href="#" onclick="showDashboard()" id="navDashboard" class="active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="#" onclick="showReportSection()" id="navReport"><i class="fas fa-plus-circle"></i> Report Problem</a>
+            <a href="#" onclick="showMyProblems()" id="navProblems"><i class="fas fa-list-alt"></i> My Problems</a>
+            <a href="#" onclick="showWorks()" id="navWorks"><i class="fas fa-road"></i> Development Works</a>
+            <a href="citizen-login.html" onclick="logout()" style="color:#dc3545;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div id="dashboardSection">
+            <h2 class="section-title">Dashboard Overview</h2>
+            <div class="card">
+                <h3><i class="fas fa-user-circle"></i> Profile Details</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <p><b>Name:</b> <br><span id="name" style="color:#555;"></span></p>
+                    <p><b>Aadhaar Number:</b> <br><span id="aadhaar" style="color:#555;"></span></p>
+                </div>
+            </div>
+
+            <h3 class="section-title">Problem Statistics</h3>
+            <div class="status-boxes">
+                <div class="status applied" onclick="showByStatus('Submitted')">
+                    <i class="fas fa-paper-plane"></i>
+                    <h2 id="countSubmitted">0</h2>
+                    <p>Problems Submitted</p>
+                </div>
+                <div class="status progress" onclick="showByStatus('In Progress')">
+                    <i class="fas fa-spinner"></i>
+                    <h2 id="countProgress">0</h2>
+                    <p>In Progress</p>
+                </div>
+                <div class="status approved" onclick="showByStatus('Resolved')">
+                    <i class="fas fa-check-double"></i>
+                    <h2 id="countResolved">0</h2>
+                    <p>Resolved</p>
+                </div>
+                <div class="status rejected" onclick="showByStatus('Rejected')">
+                    <i class="fas fa-ban"></i>
+                    <h2 id="countRejected">0</h2>
+                    <p>Rejected</p>
+                </div>
+            </div>
+
+            <div class="card" id="problemsTable" style="display:none;">
+                <h3 id="tableTitle" style="color:#0d6efd; display:flex; align-items:center; gap:10px;">
+                    <i class="fas fa-table"></i> Problems List
+                </h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Problem Title</th>
+                            <th>Submitted Date</th>
+                            <th>Verified Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="problemRows"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="reportSection" style="display:none;">
+            <h2 class="section-title">Report New Problem</h2>
+            <div class="card">
+                <div class="form-group">
+                    <label>Problem Title</label>
+                    <input type="text" id="probTitle" placeholder="e.g. Broken Street Light">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="probDesc" rows="5" placeholder="Details about the issue..."></textarea>
+                </div>
+                <button class="submit-btn" onclick="submitProblem()">Submit Problem</button>
+            </div>
+        </div>
+
+        <div id="myProblemsSection" style="display:none;">
+            <h2 class="section-title">My Problems History</h2>
+            <div id="allProblemsList"></div>
+        </div>
+
+        <div id="worksSection" style="display:none;">
+            <h2 class="section-title">Development Works</h2>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Work ID</th>
+                            <th>Work Name</th>
+                            <th>Type</th>
+                            <th>Area</th>
+                            <th>Budget (₹)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="workRows"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* DATA MOCKING FOR STANDALONE DEMO */
+if(!localStorage.getItem("currentUser")){
+    localStorage.setItem("currentUser", JSON.stringify({name: "Guest Citizen", aadhaar: "123456789012"}));
+    localStorage.setItem("users", JSON.stringify([{name: "Guest Citizen", aadhaar: "123456789012"}]));
+}
+
+let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let user = users.find(u => u.aadhaar === currentUser.aadhaar) || currentUser;
+
+document.getElementById("name").innerText = user.name;
+document.getElementById("aadhaar").innerText = user.aadhaar;
+document.getElementById("userName").innerText = user.name;
+document.getElementById("userIcon").innerText = user.name.charAt(0);
+if(user.photo) document.getElementById("profilePhoto").src = user.photo;
+
+function refreshData() {
+    let allProblems = JSON.parse(localStorage.getItem("problems")) || [];
+    let myProblems = allProblems.filter(p => p.aadhaar === user.aadhaar);
+    
+    document.getElementById("countSubmitted").innerText = myProblems.filter(p=>p.status==="Submitted").length;
+    document.getElementById("countProgress").innerText = myProblems.filter(p=>p.status==="In Progress").length;
+    document.getElementById("countResolved").innerText = myProblems.filter(p=>p.status==="Resolved").length;
+    document.getElementById("countRejected").innerText = myProblems.filter(p=>p.status==="Rejected").length;
+    return myProblems;
+}
+
+/* NAVIGATION */
+function showDashboard(){
+    setActiveLink("navDashboard");
+    document.getElementById("dashboardSection").style.display = "block";
+    document.getElementById("myProblemsSection").style.display = "none";
+    document.getElementById("reportSection").style.display = "none";
+    document.getElementById("worksSection").style.display = "none";
+    refreshData();
+}
+
+function showReportSection(){
+    setActiveLink("navReport");
+    document.getElementById("dashboardSection").style.display = "none";
+    document.getElementById("myProblemsSection").style.display = "none";
+    document.getElementById("reportSection").style.display = "block";
+    document.getElementById("worksSection").style.display = "none";
+}
+
+function showMyProblems(){
+    setActiveLink("navProblems");
+    document.getElementById("dashboardSection").style.display = "none";
+    document.getElementById("reportSection").style.display = "none";
+    document.getElementById("myProblemsSection").style.display = "block";
+    document.getElementById("worksSection").style.display = "none";
+    renderMyProblems();
+}
+
+function setActiveLink(id){
+    document.querySelectorAll(".menu a").forEach(a => a.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+/* SUBMIT LOGIC */
+function submitProblem(){
+    let title = document.getElementById("probTitle").value;
+    let desc = document.getElementById("probDesc").value;
+    if(!title || !desc) return alert("Please fill all fields");
+
+    let allProblems = JSON.parse(localStorage.getItem("problems")) || [];
+    let newProblem = {
+        problemId: "PRB" + Math.floor(1000 + Math.random() * 9000),
+        aadhaar: user.aadhaar,
+        title: title,
+        description: desc,
+        status: "Submitted",
+        submittedAt: new Date().toLocaleString()
+    };
+    allProblems.push(newProblem);
+    localStorage.setItem("problems", JSON.stringify(allProblems));
+    alert("Problem Reported Successfully!");
+    document.getElementById("probTitle").value = "";
+    document.getElementById("probDesc").value = "";
+    showDashboard();
+}
+
+function renderMyProblems(){
+    let myProblems = refreshData();
+    let container = document.getElementById("allProblemsList");
+    container.innerHTML = myProblems.length === 0 ? "<p>No problems found.</p>" : "";
+
+    myProblems.forEach(p => {
+        let color = p.status === "Submitted" ? "#6f42c1" : (p.status === "Resolved" ? "#198754" : (p.status === "Rejected" ? "#dc3545" : "#ffc107"));
+        container.innerHTML += `
+        <div class="problem-item" style="border-left-color: ${color}">
+            <div class="prob-header">
+                <h3 class="prob-title">${p.title} <span class="prob-id">#${p.problemId}</span></h3>
+                <span class="badge" style="background:${color}">${p.status}</span>
+            </div>
+            <p class="prob-desc">${p.description}</p>
+            <div class="prob-footer"><span>Date: ${p.submittedAt}</span></div>
+        </div>`;
+    });
+}
+
+function showByStatus(status){
+    let myProblems = refreshData();
+    let rows = document.getElementById("problemRows");
+    rows.innerHTML = "";
+    let list = myProblems.filter(p => p.status === status);
+    document.getElementById("tableTitle").innerHTML = `<i class="fas fa-filter"></i> ${status} Problems`;
+
+    list.forEach(p => {
+        rows.innerHTML += `<tr><td>#${p.problemId}</td><td><b>${p.title}</b></td><td>${p.submittedAt}</td><td>${p.verifiedAt || "-"}</td><td>${p.status}</td></tr>`;
+    });
+    document.getElementById("problemsTable").style.display = list.length ? "block" : "none";
+}
+
+function uploadPhoto(e){
+    if(e.target.files && e.target.files[0]){
+        let reader = new FileReader();
+        reader.onload = function(evt){
+            user.photo = evt.target.result;
+            let index = users.findIndex(u => u.aadhaar === user.aadhaar);
+            if(index !== -1) users[index] = user;
+            localStorage.setItem("users", JSON.stringify(users));
+            localStorage.setItem("currentUser", JSON.stringify(user));
+            document.getElementById("profilePhoto").src = evt.target.result;
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+}
+
+function logout(){ localStorage.removeItem("currentUser"); alert("Logged out"); location.reload(); }
+
+/* ================= MODIFIED DEVELOPMENT WORKS (MATCHING DASHBOARD 1) ================= */
+function showWorks(){
+    setActiveLink("navWorks");
+    document.getElementById("dashboardSection").style.display = "none";
+    document.getElementById("reportSection").style.display = "none";
+    document.getElementById("myProblemsSection").style.display = "none";
+    document.getElementById("worksSection").style.display = "block";
+    renderWorks();
+}
+
+function renderWorks(){
+    // KEY MATCHED TO DASHBOARD 1: "developmentWorks"
+    let works = JSON.parse(localStorage.getItem("developmentWorks")) || [];
+    let rows = document.getElementById("workRows");
+    rows.innerHTML = "";
+
+    if(works.length === 0){
+        rows.innerHTML = "<tr><td colspan='6' align='center'>No development works available.</td></tr>";
+        return;
+    }
+
+    works.forEach(w => {
+        // FIELDS MATCHED TO DASHBOARD 1: id, name, type, area, budget, status
+        rows.innerHTML += `
+        <tr>
+            <td>#${w.id || "-"}</td>
+            <td><b>${w.name || "-"}</b></td>
+            <td>${w.type || "-"}</td>
+            <td>${w.area || "-"}</td>
+            <td>₹${Number(w.budget).toLocaleString('en-IN') || "-"}</td>
+            <td><span class="badge" style="background:#0d6efd">${w.status || "Not Started"}</span></td>
+        </tr>`;
+    });
+}
+
+// Auto-sync every 2 seconds if something changes in the other tab
+setInterval(() => {
+    if(document.getElementById("worksSection").style.display === "block") {
+        renderWorks();
+    }
+    refreshData();
+}, 2000);
+
+refreshData();
+</script>
+
+</body>
+</html>
